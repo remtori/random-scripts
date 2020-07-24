@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 const FORM_ID = `1FAIpQLSe_U-O2su01BlL4lHSShGOigHioUKUn5BSnQiurNcTIagY6hA`;
 
-// for (let i = 0; i < 10; i++)
+for (let i = 0; i < 100; i++)
     submit();
 
 function submit() {
@@ -107,13 +107,13 @@ function submit() {
     }
 
     const url = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse?${encodeAnswer(response)}&submit=SUBMIT`;
-    console.log(url);
+    // console.log(url);
 
-    // fetch(url, {
-    //     method: 'POST',
-    //     mode: 'no-cors',
-    //     referer: 'no-referer',
-    // });
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        referer: 'no-referer',
+    });
 }
 
 function encodeAnswer(answer) {
