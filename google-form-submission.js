@@ -1,63 +1,65 @@
 const fetch = require('node-fetch');
 
-const FORM_ID = `1FAIpQLSe_U-O2su01BlL4lHSShGOigHioUKUn5BSnQiurNcTIagY6hA`;
+const FORM_ID = `1FAIpQLSewIJbNpDVufGs2maCWkTILwB1d7U4Lo_BKlVfVMsfW5tO0fA`;
 
-for (let i = 0; i < 100; i++)
+let count = 0;
+const ITERATION_COUNT = 77;
+for (let i = 0; i < ITERATION_COUNT; i++)
     submit();
 
 function submit() {
 
     let interestInStudy = inRange(1, 5);
-    let distanceToSchool = inRange(15, 90);
+    let distanceToSchool = inRange(1, 5);
     let familyRelationship = inRange(1, 5);
-    let selfStudyTime = inRange(5, 70);
+    let selfStudyTime = inRange(1, 4);
     let age = inRange(17, 22);
     let origin = inRange(0, 1);
     let extraClass = inRange(0, 1);
 
     // [ 'Yếu', 'Trung Bình', 'Khá' , 'Giỏi', 'Xuất Sắc' ]
     let failCount, continueStudy, freeTime, alcoholUsageWeekday, alcoholUsageWeekend, skipCount, grade;
-    if (interestInStudy <= 2 && distanceToSchool > 50) {
-        failCount = inRange(4, 10);
+    if (interestInStudy <= 2 && distanceToSchool >= 3) {
+        failCount = inRange(2, 3);
         continueStudy = priorityPick([ [ 3, 'Có'] , [ 7, 'Không']]);
         freeTime = inRange(3, 5);
         alcoholUsageWeekday = inRange(2, 4);
         alcoholUsageWeekend = inRange(3, 5);
-        skipCount = inRange(5, 15);
+        skipCount = inRange(2, 3);
         grade = [ 'Yếu', 'Trung Bình' ];
-    } else if (interestInStudy <= 2 && familyRelationship <= 2 & selfStudyTime < 30) {
+    } else if (interestInStudy <= 2 && familyRelationship <= 2 & selfStudyTime < 3) {
         failCount = inRange(4, 10);
         continueStudy = priorityPick([ [ 4, 'Có'] , [ 6, 'Không']]);
         freeTime = inRange(3, 5);
         alcoholUsageWeekday = inRange(3, 4);
         alcoholUsageWeekend = inRange(4, 5);
-        skipCount = inRange(5, 15);
+        skipCount = inRange(2, 3);
         grade = [ 'Yếu', 'Trung Bình' ];
     } else if (origin == 1) {
         interestInStudy = inRange(1, 4);
-        failCount = inRange(5, 10);
+        failCount = inRange(2, 3);
         continueStudy = priorityPick([ [ 8, 'Có'] , [ 2, 'Không']]);
         freeTime = inRange(4, 5);
         alcoholUsageWeekday = inRange(2, 3);
         alcoholUsageWeekend = inRange(3, 4);
-        skipCount = inRange(5, 10);
+        skipCount = inRange(2, 3);
         grade = [ 'Trung Bình', 'Khá' ];
-    } else if (extraClass == 1 && interestInStudy >= 4) {        
+    } else if (extraClass == 1 && interestInStudy >= 4) {
         failCount = inRange(1, 5);
         continueStudy = priorityPick([ [ 9, 'Có'] , [ 1, 'Không']]);
         freeTime = inRange(1, 2);
         alcoholUsageWeekday = inRange(2, 4);
         alcoholUsageWeekend = inRange(4, 5);
-        skipCount = inRange(5, 10);
+        skipCount = inRange(2, 3);
         grade = [ 'Trung Bình', 'Khá', 'Giỏi' ];
-    } else if (Math.random() < 0.5) {
-        selfStudyTime = inRange(40, 60);
-        failCount = inRange(5, 8);
+    } else if (Math.random() < 0.1) {
+        selfStudyTime = inRange(1, 2);
+        failCount = inRange(1, 2);
         continueStudy = priorityPick([ [ 8, 'Có'] , [ 2, 'Không']]);
         freeTime = inRange(3, 5);
-        alcoholUsageWeekday = inRange(1, 3);
+        alcoholUsageWeekday = inRange(1, 4);
         alcoholUsageWeekend = inRange(3, 5);
-        skipCount = inRange(5, 10);
+        skipCount = inRange(2, 3);
         grade = [ 'Yếu', 'Trung Bình', 'Khá' ];
     } else {
         failCount = inRange(1, 5);
@@ -103,7 +105,7 @@ function submit() {
         'entry.624502069': oneOf(grade),
         'entry.334056681': oneOf(grade),
         'entry.1465354642': oneOf(grade),
-        'pageHistory': '0,1,2,3,4',
+        'pageHistory': '0,1,2,3',
     }
 
     const url = `https://docs.google.com/forms/d/e/${FORM_ID}/formResponse?${encodeAnswer(response)}&submit=SUBMIT`;
@@ -113,6 +115,9 @@ function submit() {
         method: 'POST',
         mode: 'no-cors',
         referer: 'no-referer',
+    }).then(() => {
+        count++;
+        process.stdout.write(`Submitting ${count}/${ITERATION_COUNT} ...\r`);
     });
 }
 
