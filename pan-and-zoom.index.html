@@ -1,0 +1,90 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pan and Zoom</title>
+    </head>
+    <body>
+        <canvas id="cvs" width="720" height="480"></canvas>
+        <script>
+            const ZOOM_SPEED = 0.01;
+            const PAN_SPEED = 5;
+
+            const displayRect = {
+                x: 40,
+                y: 40,
+                width: 640,
+                height: 400,
+            };
+
+            const margin = {
+                left: 100,
+                right: 100,
+                top: 150,
+                bottom: 200,
+            };
+
+            const loadImage = (url) =>
+                new Promise((resolve, reject) => {
+                    const image = new Image();
+                    image.onload = () => resolve(image);
+                    image.onerror = reject;
+                    image.src = url;
+                });
+
+            (async () => {
+                const ctx = cvs.getContext('2d');
+                const width = cvs.width;
+                const height = cvs.height;
+                const image = await loadImage(
+                    'https://i.imgur.com/qDxaCnU.jpg'
+                );
+
+                let zoom = 0.7;
+                const offset = { x: 0, y: 0 };
+                window.addEventListener('keydown', (e) => {
+                    switch (e.key) {
+                        case 'a':
+                            offset.x -= PAN_SPEED / zoom;
+                            break;
+                        case 'd':
+                            offset.x += PAN_SPEED / zoom;
+                            break;
+                        case 'w':
+                            offset.y -= PAN_SPEED / zoom;
+                            break;
+                        case 's':
+                            offset.y += PAN_SPEED / zoom;
+                            break;
+                        case 'q':
+                            zoom *= 1 + ZOOM_SPEED;
+                            break;
+                        case 'e':
+                            zoom *= 1 - ZOOM_SPEED;
+                    }
+                });
+
+                function draw() {
+                    ctx.save();
+                    ctx.clearRect(0, 0, width, height);
+                    ctx.translate(displayRect.x, displayRect.y);
+
+                    ctx.save();
+                    ctx.translate(-offset.x, -offset.y);
+                    ctx.scale(zoom, zoom);
+                    ctx.drawImage(image, 0, 0);
+                    ctx.restore();
+
+                    ctx.strokeStyle = '#f00';
+                    ctx.rect(0, 0, displayRect.width, displayRect.height);
+                    ctx.stroke();
+
+                    ctx.restore();
+                    requestAnimationFrame(draw);
+                }
+
+                requestAnimationFrame(draw);
+            })();
+        </script>
+    </body>
+</html>
